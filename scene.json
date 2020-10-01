@@ -1,0 +1,116 @@
+{
+  "width": 800,
+  "height": 600,
+  "vertexShaderPath": "./examples_shader/light.vert",
+  "fragmentShaderPath": "./examples_shader/light.frag",
+  "camera": {
+    "position": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 3.0
+    },
+    "target": {
+      "x": 0.0,
+      "y": 0.0,
+      "z": 0.0
+    }
+  },
+  "actors": [
+    {
+      "objPath": "./cube.obj",
+      "scale": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "translate": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotate": {
+        "angle": 0,
+        "axis": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      }
+    },
+    {
+      "objPath": "./cube.obj",
+      "scale": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "translate": {
+        "x": 3.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotate": {
+        "angle": 0,
+        "axis": {
+          "x": 1.0,
+          "y": 0.0,
+          "z": 0.0
+        }
+      }
+    }
+  ],
+  "lights": [
+    {
+      "type": "Point Light",
+      "position": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 2.0
+      },
+      "diffuse": {
+        "x": 0.8,
+        "y": 0.8,
+        "z": 0.8
+      },
+      "ambient": {
+        "x": 0.1,
+        "y": 0.1,
+        "z": 0.1
+      },
+      "specular": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "constant": 1.0,
+      "linear": 0.09,
+      "quadratic": 0.032
+    },
+    {
+      "type": "Point Light",
+      "position": {
+        "x": 0.0,
+        "y": -0.5,
+        "z": 0.0
+      },
+      "diffuse": {
+        "x": 0.5,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "ambient": {
+        "x": 0.1,
+        "y": 0.1,
+        "z": 0.1
+      },
+      "specular": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "constant": 1.0,
+      "linear": 0.09,
+      "quadratic": 0.032
+    }
+  ]
+}

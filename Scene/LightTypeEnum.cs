@@ -1,0 +1,7 @@
+enum LightTypeEnum
+{
+  DIRECTIONAL_LIGHT = 0,
+  POINT_LIGHT,
+  SPOTLIGHT,
+
+}
