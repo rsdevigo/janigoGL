@@ -1,5 +1,5 @@
 using OpenTK;
-using opentk_example;
+using janigoGL;
 namespace Scene
 {
   class Transform

@@ -1,6 +1,6 @@
 using OpenTK;
 using System;
-using opentk_example;
+using janigoGL;
 namespace Scene
 {
   abstract class Light

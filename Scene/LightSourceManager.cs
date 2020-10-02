@@ -1,5 +1,5 @@
 using OpenTK;
-using opentk_example;
+using janigoGL;
 using System.Collections.Generic;
 using System;
 using System.Reflection;

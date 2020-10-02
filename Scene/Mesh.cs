@@ -2,7 +2,7 @@ using System;
 using OpenTK;
 using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL4;
-using opentk_example;
+using janigoGL;
 
 namespace Scene
 {

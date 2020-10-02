@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using opentk_example;
+using janigoGL;
 using Assimp;
 
 namespace Scene
@@ -9,8 +9,10 @@ namespace Scene
   {
     List<Mesh> _meshes = new List<Mesh>();
     Transform _transform;
+    Material _material;
 
     public Transform transform { set { _transform = value; } }
+    public Material material { set { _material = value; } }
 
     public Actor(string path)
     {
@@ -105,6 +107,7 @@ namespace Scene
     public void Draw(Shader shader)
     {
       shader.SetMatrix4(_transform.LocalToWorldMatrix(), "modelMatrix");
+      _material.LoadMaterial(shader);
       _meshes.ForEach(mesh =>
       {
         mesh.Draw(shader);

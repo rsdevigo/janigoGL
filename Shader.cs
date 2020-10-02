@@ -6,7 +6,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
 
-namespace opentk_example
+namespace janigoGL
 {
   class Shader : IDisposable
   {

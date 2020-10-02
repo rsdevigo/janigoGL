@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace opentk_example
+namespace janigoGL
 {
   class Program
   {

@@ -5,7 +5,7 @@ using OpenTK.Graphics.OpenGL4;
 using System;
 using Scene;
 
-namespace opentk_example
+namespace janigoGL
 {
   class Game : GameWindow
   {

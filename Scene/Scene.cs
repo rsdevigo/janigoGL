@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using OpenTK;
 using Newtonsoft.Json.Linq;
-using opentk_example;
+using janigoGL;
 
 
 namespace Scene
@@ -46,7 +46,9 @@ namespace Scene
         t.translate = actor["translate"].ToObject<Vector3>();
         t.axis = actor["rotate"]["axis"].ToObject<Vector3>();
         t.angle = (float)actor["rotate"]["angle"];
+        Material m = new Material(actor["material"]["ambient"].ToObject<Vector3>(), actor["material"]["diffuse"].ToObject<Vector3>(), actor["material"]["specular"].ToObject<Vector3>(), (float)actor["material"]["shininess"]);
         actorObj.transform = t;
+        actorObj.material = m;
         _actors.Add(actorObj);
       }
     }

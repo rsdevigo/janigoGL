@@ -35,6 +35,13 @@ struct SpotLight {
   float cutoff;
 };
 
+struct Material {
+  vec3 ambient;
+  vec3 diffuse;
+  vec3 specular;
+  float shininess;
+};
+
 uniform int nr_of_dir_lights;
 uniform int nr_of_point_lights;
 uniform int nr_of_spot_lights;
@@ -44,20 +51,17 @@ uniform DirectionalLight directionalLights[MAX_LIGHT_SIZE];
 uniform PointLight pointLights[MAX_LIGHT_SIZE];
 uniform SpotLight spotLights[MAX_LIGHT_SIZE];
 
-vec3 material_ambient = vec3(1.0f, 0.5f, 0.31f);
-vec3 material_diffuse  = vec3(1.0f, 0.5f, 0.31f);
-vec3 material_specular  = vec3(0.5f, 0.5f, 0.5f);
-float shininess = 32.0;
+uniform Material material;
 
 out vec4 FragColor;
 
-vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewPos);
+vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewPos, Material material);
 float fallOff(PointLight light, vec3 fragPos);
 
 void main() {
   vec3 saida = vec3(0.0);
   for(int i = 0; i < nr_of_point_lights; i++) {
-      saida += calculatePointLight(pointLights[i], fragPos, normal, viewPos);
+      saida += calculatePointLight(pointLights[i], fragPos, normal, viewPos, material);
   }
 
   FragColor = vec4(saida, 1.0);
@@ -65,7 +69,7 @@ void main() {
 }
 
 
-vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewPos) {
+vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewPos, Material material) {
   vec3 lightDirection = normalize(light.position - fragPos);
   vec3 norm = normalize(normal);
   float _fallOff = fallOff(light, fragPos);
@@ -82,7 +86,7 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewP
   float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256.0);
   vec3 specular = light.specular * spec * _fallOff;
   
-  return ambient * material_ambient + diffuse * material_diffuse + specular * material_specular;
+  return ambient * material.ambient + diffuse * material.diffuse + specular * material.specular;
 }
 
 float fallOff(PointLight light, vec3 fragPos) {
