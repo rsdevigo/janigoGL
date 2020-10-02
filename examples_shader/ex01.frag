@@ -83,7 +83,7 @@ vec3 calculatePointLight(PointLight light, vec3 fragPos, vec3 normal, vec3 viewP
   //specular
   vec3 reflectDir = reflect(-lightDirection, norm);
   vec3 viewDir = normalize(viewPos - fragPos);
-  float spec = pow(max(dot(viewDir, reflectDir), 0.0), 256.0);
+  float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
   vec3 specular = light.specular * spec * _fallOff;
   
   return ambient * material.ambient + diffuse * material.diffuse + specular * material.specular;

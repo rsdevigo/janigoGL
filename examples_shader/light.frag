@@ -55,5 +55,18 @@ uniform Material material;
 
 out vec4 FragColor;
 
+vec3 calcLightPoint(PointLight light, vec3 point, vec3 point_normal, vec3 eyePoint, Material surfaceMaterial);
+
 void main(void) {
+  vec3 saida = vec3(0.0);
+  for (int i = 0; i < nr_of_point_lights; i++) {
+    saida += calcLightPoint(pointLights[i], fragPos, normal, viewPos, material);
+  }
+  FragColor = vec4(saida, 1);
+}
+
+vec3 calcLightPoint(PointLight light, vec3 point, vec3 point_normal, vec3 eyePoint, Material surfaceMaterial) {
+  //TODO: modelo de iluminação ADS usando os atributos do material e da luz.
+  //Onde a normal já está normalizada
+  return vec3(0.0);
 }
