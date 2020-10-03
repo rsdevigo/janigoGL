@@ -11,31 +11,13 @@
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="examples_shader\*">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Update="cube.obj">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="examples_shader\ex01.frag">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="examples_shader\ex01.vert">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="examples_shader\ex02.frag">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="examples_shader\ex02.vert">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="examples_shader\light.frag">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="examples_shader\light.vert">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="examples_shader\revi.frag">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="examples_shader\revi.vert">
+    <None Include="backpack\*">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="scene.json">
