@@ -22,29 +22,34 @@ namespace Scene
     public void LoadLights(Shader shader)
     {
       SetNumberOfLights(shader);
-      int j = 0;
+      int p = 0;
+      int d = 0;
+      int s = 0;
+      int j;
       string uniformName = "";
       _lights.ForEach(light =>
       {
-
         if (light.type == LightTypeEnum.DIRECTIONAL_LIGHT)
         {
           uniformName = "directionalLights";
+          j = d++;
           shader.SetVector3(light.position, $"{uniformName}[{j}].direction");
-
         }
         else if (light.type == LightTypeEnum.POINT_LIGHT)
         {
           uniformName = "pointLights";
+          j = p++;
           shader.SetVector3(light.position, $"{uniformName}[{j}].position");
         }
         else
         {
           uniformName = "spotLights";
+          j = s++;
           SpotLight l = (SpotLight)light;
           shader.SetVector3(((SpotLight)light).direction, $"{uniformName}[{j}].direction");
           shader.SetVector3(((SpotLight)light).position, $"{uniformName}[{j}].position");
           shader.SetFloat(((SpotLight)light).cutoff, $"{uniformName}[{j}].cutoff");
+          shader.SetFloat(((SpotLight)light).outercutoff, $"{uniformName}[{j}].outercutoff");
         }
         shader.SetFloat(light.constant, $"{uniformName}[{j}].constant");
         shader.SetFloat(light.linear, $"{uniformName}[{j}].linear");
@@ -52,7 +57,6 @@ namespace Scene
         shader.SetVector3(light.diffuse, $"{uniformName}[{j}].diffuse");
         shader.SetVector3(light.ambient, $"{uniformName}[{j}].ambient");
         shader.SetVector3(light.specular, $"{uniformName}[{j}].specular");
-        j++;
       });
     }
 

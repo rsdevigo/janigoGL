@@ -14,8 +14,8 @@ uniform mat4 projectionMatrix;
 uniform vec3 viewPos;
 
 void main(void) {
-  fragPos = vec4(aPosition,1) * modelMatrix;
+  fragPos = vec3(vec4(aPosition,1) * modelMatrix);
   fColor = aColor.rgb;
-  normal = normalize(aNormal * mat3(transpose(inverse(modelMatrix))));
+  normal = aNormal * mat3(transpose(inverse(modelMatrix)));
   gl_Position = vec4(aPosition,1) * modelMatrix * viewMatrix * projectionMatrix;
 }

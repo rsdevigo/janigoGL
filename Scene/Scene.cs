@@ -73,6 +73,22 @@ namespace Scene
           lightObj.quadratic = (float)light["quadratic"];
           lightSourceManager.AddLight(lightObj);
         }
+        if (type.CompareTo("Directional Light") == 0)
+        {
+          DirectionalLight lightObj = new DirectionalLight(position, ambient, diffuse, specular);
+          lightSourceManager.AddLight(lightObj);
+        }
+        if (type.CompareTo("Spot Light") == 0)
+        {
+          Vector3 direction = light["direction"].ToObject<Vector3>();
+          float cutoff = (float)light["cutoff"];
+          float outercutoff = (float)light["outercutoff"];
+          SpotLight lightObj = new SpotLight(position, ambient, diffuse, specular, direction, cutoff, outercutoff);
+          lightObj.constant = (float)light["constant"];
+          lightObj.linear = (float)light["linear"];
+          lightObj.quadratic = (float)light["quadratic"];
+          lightSourceManager.AddLight(lightObj);
+        }
       }
     }
 
