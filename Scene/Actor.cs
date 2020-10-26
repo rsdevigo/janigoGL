@@ -2,20 +2,28 @@ using System;
 using System.Collections.Generic;
 using janigoGL;
 using Assimp;
+using OpenTK.Graphics.OpenGL4;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Advanced;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 
 namespace Scene
 {
   class Actor
   {
     List<Mesh> _meshes = new List<Mesh>();
+    List<Texture> texturesLoaded = new List<Texture>();
     Transform _transform;
     Material _material;
+    String directory;
 
     public Transform transform { set { _transform = value; } }
     public Material material { set { _material = value; } }
 
     public Actor(string path)
     {
+      directory = path.Substring(0, path.LastIndexOf("/"));
       LoadActor(path);
     }
 
@@ -54,6 +62,7 @@ namespace Scene
     {
       List<Vertex> vertices = new List<Vertex>();
       List<uint> indices = new List<uint>();
+      List<Texture> textures = new List<Texture>();
       Random r = new Random();
       for (int i = 0; i < amesh.VertexCount; i++)
       {
@@ -101,7 +110,16 @@ namespace Scene
         }
       }
 
-      return new Mesh(vertices, indices, new List<Texture>());
+      if (amesh.MaterialIndex >= 0)
+      {
+        Assimp.Material material = scene.Materials[amesh.MaterialIndex];
+        List<Texture> diffuseMaps = loadMaterialTextures(material, TextureType.Diffuse, "texture_diffuse");
+        textures.InsertRange(textures.Count, diffuseMaps);
+        List<Texture> specularMaps = loadMaterialTextures(material, TextureType.Specular, "texture_specular");
+        textures.InsertRange(textures.Count, specularMaps);
+      }
+
+      return new Mesh(vertices, indices, textures);
     }
 
     public void Draw(Shader shader)
@@ -120,6 +138,83 @@ namespace Scene
       {
         mesh.UnLoad();
       });
+    }
+
+    List<Texture> loadMaterialTextures(Assimp.Material mat, Assimp.TextureType type, string typeName)
+    {
+      List<Texture> textures = new List<Texture>();
+      for (int i = 0; i < mat.GetMaterialTextureCount(type); i++)
+      {
+        bool skip = false;
+        TextureSlot textureSlot;
+        mat.GetMaterialTexture(type, i, out textureSlot);
+        for (int j = 0; j < texturesLoaded.Count; j++)
+        {
+
+          if (texturesLoaded[j].path.CompareTo(textureSlot.FilePath) == 0)
+          {
+            skip = true;
+            textures.Add(texturesLoaded[j]);
+            break;
+          }
+        }
+
+        if (!skip)
+        {
+          Texture texture = new Texture();
+          texture.id = TextureFromFile(textureSlot.FilePath, directory);
+          texture.type = typeName;
+          texture.path = textureSlot.FilePath;
+          textures.Add(texture);
+          texturesLoaded.Add(texture);
+        }
+
+      }
+      return textures;
+    }
+
+    public uint TextureFromFile(String filename, String directory)
+    {
+      filename = directory + '/' + filename;
+
+      uint textureID;
+      GL.GenTextures(1, out textureID);
+      Image<Rgba32> image = Image.Load<Rgba32>(filename);
+
+      if (image != null)
+      {
+        image.Mutate(x => x.Flip(FlipMode.Vertical));
+
+        List<byte> pixels = new List<byte>();
+
+        for (int y = 0; y < image.Height; y++)
+        {
+          Span<Rgba32> p = image.GetPixelRowSpan(y);
+          for (int x = 0; x < image.Width; x++)
+          {
+            pixels.Add(p[x].R);
+            pixels.Add(p[x].G);
+            pixels.Add(p[x].B);
+            pixels.Add(p[x].A);
+          }
+        }
+
+        GL.BindTexture(TextureTarget.Texture2D, textureID);
+        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixels.ToArray());
+        GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)OpenTK.Graphics.OpenGL4.TextureWrapMode.Repeat);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)OpenTK.Graphics.OpenGL4.TextureWrapMode.Repeat);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+
+        image.Dispose();
+      }
+      else
+      {
+        Console.WriteLine("Texture failed to load at path: " + filename);
+      }
+
+      return textureID;
     }
   }
 }

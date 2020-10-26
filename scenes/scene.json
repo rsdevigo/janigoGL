@@ -1,8 +1,8 @@
 {
   "width": 800,
   "height": 600,
-  "vertexShaderPath": "./examples_shader/light.vert",
-  "fragmentShaderPath": "./examples_shader/light.frag",
+  "vertexShaderPath": "./examples_shader/texture.vert",
+  "fragmentShaderPath": "./examples_shader/texture.frag",
   "camera": {
     "position": {
       "x": 0.0,
@@ -17,22 +17,22 @@
   },
   "actors": [
     {
-      "objPath": "./models/cube.obj",
+      "objPath": "./models/backpack/backpack.obj",
       "scale": {
         "x": 0.5,
         "y": 0.5,
         "z": 0.5
       },
       "translate": {
-        "x":-2.0,
+        "x": 0.0,
         "y": 0.0,
         "z": 0.0
       },
       "rotate": {
-        "angle": 0,
+        "angle": 45,
         "axis": {
-          "x": 1.0,
-          "y": 0.0,
+          "x": 0.0,
+          "y": 1.0,
           "z": 0.0
         }
       },
@@ -51,45 +51,6 @@
           "x": 0.1,
           "y": 0.1,
           "z": 0.1
-        },
-        "shininess": 256.0
-      }
-    },
-    {
-      "objPath": "./models/teapot/teapot.obj",
-      "scale": {
-        "x": 1,
-        "y": 1,
-        "z": 1
-      },
-      "translate": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-      },
-      "rotate": {
-        "angle": 0,
-        "axis": {
-          "x": 1.0,
-          "y": 0.0,
-          "z": 0.0
-        }
-      },
-      "material": {
-        "diffuse": {
-          "x": 1.0,
-          "y": 0.5,
-          "z": 0.31
-        },
-        "ambient": {
-          "x": 1.0,
-          "y": 0.5,
-          "z": 0.31
-        },
-        "specular": {
-          "x": 0.5,
-          "y": 0.5,
-          "z": 0.5
         },
         "shininess": 256.0
       }

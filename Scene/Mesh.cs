@@ -24,6 +24,29 @@ namespace Scene
 
     public void Draw(Shader shader)
     {
+      uint diffuseNr = 1;
+      uint specularNr = 1;
+      for (int i = 0; i < _textures.Count; i++)
+      {
+        GL.ActiveTexture((TextureUnit.Texture0 + i));
+        // retrieve texture number (the N in diffuse_textureN)
+        String number = "1";
+        String name = _textures[i].type;
+        if (name == "texture_diffuse")
+        {
+          number = diffuseNr.ToString();
+          diffuseNr++;
+        }
+        else if (name == "texture_specular")
+        {
+          number = specularNr.ToString();
+          specularNr++;
+        }
+
+        shader.SetFloat(i, name + number);
+        GL.BindTexture(TextureTarget.Texture2D, _textures[i].id);
+      }
+      GL.ActiveTexture(TextureUnit.Texture0);
       GL.BindVertexArray(VAO);
       GL.DrawElements(BeginMode.Triangles, _indices.Count, DrawElementsType.UnsignedInt, 0);
       GL.BindVertexArray(0);
@@ -74,8 +97,9 @@ namespace Scene
 
   struct Texture
   {
-    uint id;
-    string type;
+    public uint id;
+    public string type;
+    public string path;
   };
 
   struct Vertex
