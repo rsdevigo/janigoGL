@@ -26,9 +26,11 @@ namespace Scene
     {
       uint diffuseNr = 1;
       uint specularNr = 1;
+      
       for (int i = 0; i < _textures.Count; i++)
       {
-        GL.ActiveTexture((TextureUnit.Texture0 + i));
+        TextureUnit t = (TextureUnit.Texture0 + i);
+        GL.ActiveTexture(t);
         // retrieve texture number (the N in diffuse_textureN)
         String number = "1";
         String name = _textures[i].type;
@@ -42,14 +44,13 @@ namespace Scene
           number = specularNr.ToString();
           specularNr++;
         }
-
-        shader.SetFloat(i, name + number);
+        shader.SetInt(i, name + number);
         GL.BindTexture(TextureTarget.Texture2D, _textures[i].id);
       }
-      GL.ActiveTexture(TextureUnit.Texture0);
       GL.BindVertexArray(VAO);
       GL.DrawElements(BeginMode.Triangles, _indices.Count, DrawElementsType.UnsignedInt, 0);
       GL.BindVertexArray(0);
+      GL.ActiveTexture(TextureUnit.Texture0);
     }
 
     private void SetupMesh()
