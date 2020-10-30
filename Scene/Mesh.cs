@@ -44,7 +44,7 @@ namespace Scene
           number = specularNr.ToString();
           specularNr++;
         }
-        shader.SetInt(i, name + number);
+        shader.SetInt(i, "material."+ name + number);
         GL.BindTexture(TextureTarget.Texture2D, _textures[i].id);
       }
       GL.BindVertexArray(VAO);

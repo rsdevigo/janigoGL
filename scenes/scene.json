@@ -1,8 +1,8 @@
 {
   "width": 800,
   "height": 600,
-  "vertexShaderPath": "./examples_shader/texture.vert",
-  "fragmentShaderPath": "./examples_shader/texture.frag",
+  "vertexShaderPath": "./examples_shader/texture_light_map.vert",
+  "fragmentShaderPath": "./examples_shader/texture_light_map.frag",
   "camera": {
     "position": {
       "x": 0.0,
@@ -26,7 +26,7 @@
       "translate": {
         "x": 0.0,
         "y": 0.0,
-        "z": 0.0
+        "z": 2.0
       },
       "rotate": {
         "angle": 0,
@@ -66,9 +66,9 @@
         "z": 3.0
       },
       "diffuse": {
-        "x": 0.8,
-        "y": 0.8,
-        "z": 0.8
+        "x": 1,
+        "y": 1,
+        "z": 1
       },
       "ambient": {
         "x": 0.1,

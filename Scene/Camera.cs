@@ -88,5 +88,11 @@ namespace Scene
       isOrtho = !isOrtho;
       UpdateMatrices();
     }
+
+    public void Forward(double time) 
+    {
+      _position += _front * (float)time * 1.5f;
+      UpdateMatrices();
+    }
   }
 }

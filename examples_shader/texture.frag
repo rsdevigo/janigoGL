@@ -7,13 +7,21 @@ layout(location = 3)in vec2 texCoords;
 
 out vec4 FragColor;
 
+struct Material {
+  vec3 ambient;
+  vec3 diffuse;
+  vec3 specular;
+  float shininess;
+  sampler2D texture_diffuse1;
+  sampler2D texture_specular1;
+};
 
-uniform sampler2D texture_diffuse1;
-uniform sampler2D texture_specular1;
+
+uniform Material material;
 
 void main()
 {
-    FragColor = texture(texture_diffuse1, texCoords);
+    FragColor = texture(material.texture_diffuse1, texCoords);
 }
 
 

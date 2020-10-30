@@ -40,13 +40,32 @@ namespace Scene
       for (int i = 0; i < actors.Count; i++)
       {
         actor = actors[i];
-        Actor actorObj = new Actor((string)actor["objPath"]);
+        
+        if (actor["objPath"] == null) {
+          continue;
+        }
+        Actor actorObj = new Actor((string)(actor["objPath"]));
         Transform t = new Transform();
-        t.scale = actor["scale"].ToObject<Vector3>();
-        t.translate = actor["translate"].ToObject<Vector3>();
-        t.axis = actor["rotate"]["axis"].ToObject<Vector3>();
-        t.angle = (float)actor["rotate"]["angle"];
-        Material m = new Material(actor["material"]["ambient"].ToObject<Vector3>(), actor["material"]["diffuse"].ToObject<Vector3>(), actor["material"]["specular"].ToObject<Vector3>(), (float)actor["material"]["shininess"]);
+        t.scale = actor["scale"] != null ? actor["scale"].ToObject<Vector3>() : Vector3.One;
+        t.translate = actor["translate"] != null ? actor["translate"].ToObject<Vector3>() : Vector3.Zero;
+        t.axis = Vector3.UnitX;
+        t.angle = 0.0f;
+
+        if (actor["rotate"] != null) {
+          t.axis = actor["rotate"]["axis"] != null ? actor["rotate"]["axis"].ToObject<Vector3>() : Vector3.UnitX;
+          t.angle = actor["rotate"]["angle"] != null ? (float)actor["rotate"]["angle"] : 0.0f;
+        }
+
+        Material m = new Material(Vector3.One, Vector3.One, Vector3.One, 32.0f);
+
+        if (actor["material"] != null) {
+          Vector3 ambient = actor["material"]["ambient"] != null ? actor["material"]["ambient"].ToObject<Vector3>() : Vector3.One;
+          Vector3 diffuse = actor["material"]["diffuse"] != null ? actor["material"]["diffuse"].ToObject<Vector3>() : Vector3.One;
+          Vector3 specular = actor["material"]["specular"] != null ? actor["material"]["specular"].ToObject<Vector3>() : Vector3.One;
+          float shininess = actor["material"]["shininess"] != null ? (float)actor["material"]["shininess"] : 32.0f;
+          m = new Material(ambient, diffuse, specular, shininess);
+        }
+        
         actorObj.transform = t;
         actorObj.material = m;
         _actors.Add(actorObj);
@@ -94,6 +113,9 @@ namespace Scene
 
     public void Draw()
     {
+      _shader.SetVector3(_camera._position, "viewPos");
+      _shader.SetMatrix4(_camera._viewMatrix, "viewMatrix");
+      _shader.SetMatrix4(_camera._projectionMatrix, "projectionMatrix");
       _actors.ForEach(actor =>
       {
         actor.Draw(_shader);

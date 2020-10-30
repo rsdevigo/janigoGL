@@ -21,6 +21,11 @@ namespace janigoGL
       {
         Exit();
       }
+
+      if (input.IsKeyDown(Key.W)) 
+      {
+        scene._camera.Forward(e.Time);
+      }
       base.OnUpdateFrame(e);
     }
 
