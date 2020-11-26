@@ -81,8 +81,6 @@ void main(void) {
   }
 
   FragColor = vec4(saida, 1);
-  float gamma = 2.2;
-  FragColor.rgb = pow(FragColor.rgb, vec3(1.0/gamma));
 }
 
 vec3 calcLightPoint(PointLight light, vec3 point, vec3 point_normal, vec3 eyePoint, Material surfaceMaterial) {
@@ -130,11 +128,11 @@ vec3 calcADS(vec3 ambient, vec3 diffuse, vec3 specular, vec3 lightDir, vec3 poin
   diffuse = diffuse * diffuseScalar;
 
   vec3 normEyeDir = normalize(eyePoint - point);
-  vec3 reflectDir = reflect(-lightDir, norm);
+  vec3 halfWayDir  = normalize(lightDir + eyePoint);
 
-  float specularScalar = max(dot(reflectDir, normEyeDir), 0.0);
+  float specularScalar = max(dot(norm, halfWayDir), 0.0);
   specularScalar = pow(specularScalar, material.shininess);
   specular = specular * specularScalar;
 
-  return ambient * texture(surfaceMaterial.texture_diffuse1, texCoords).rgb + diffuse * texture(surfaceMaterial.texture_diffuse1, texCoords).rgb + specular * texture(surfaceMaterial.texture_specular1, texCoords).rgb;
+  return ambient * texture(surfaceMaterial.texture_diffuse1, texCoords).xyz + diffuse * texture(surfaceMaterial.texture_diffuse1, texCoords).xyz + specular * surfaceMaterial.specular;
 }

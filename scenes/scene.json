@@ -54,6 +54,45 @@
         },
         "shininess": 256.0
       }
+    },
+    {
+      "objPath": "./models/backpack/backpack.obj",
+      "scale": {
+        "x": 0.5,
+        "y": 0.5,
+        "z": 0.5
+      },
+      "translate": {
+        "x": 10.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotate": {
+        "angle": 0,
+        "axis": {
+          "x": 0.0,
+          "y": 1.0,
+          "z": 0.0
+        }
+      },
+      "material": {
+        "diffuse": {
+          "x": 0.5,
+          "y": 0.0,
+          "z": 0.5
+        },
+        "ambient": {
+          "x": 1.0,
+          "y": 0.5,
+          "z": 0.31
+        },
+        "specular": {
+          "x": 0.1,
+          "y": 0.1,
+          "z": 0.1
+        },
+        "shininess": 32.0
+      }
     }
   ],
   "lights": [

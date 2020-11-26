@@ -168,7 +168,6 @@ namespace Scene
           textures.Add(texture);
           texturesLoaded.Add(texture);
         }
-
       }
       return textures;
     }
@@ -200,7 +199,7 @@ namespace Scene
         }
 
         GL.BindTexture(TextureTarget.Texture2D, textureID);
-        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, image.Width, image.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixels.ToArray());
+        GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.SrgbAlpha, image.Width, image.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, pixels.ToArray());
         GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)OpenTK.Graphics.OpenGL4.TextureWrapMode.Repeat);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)OpenTK.Graphics.OpenGL4.TextureWrapMode.Repeat);

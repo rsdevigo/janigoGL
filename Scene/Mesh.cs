@@ -31,7 +31,6 @@ namespace Scene
       {
         TextureUnit t = (TextureUnit.Texture0 + i);
         GL.ActiveTexture(t);
-        // retrieve texture number (the N in diffuse_textureN)
         String number = "1";
         String name = _textures[i].type;
         if (name == "texture_diffuse")
