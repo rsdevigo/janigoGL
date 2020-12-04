@@ -117,6 +117,8 @@ namespace Scene
         textures.InsertRange(textures.Count, diffuseMaps);
         List<Texture> specularMaps = loadMaterialTextures(material, TextureType.Specular, "texture_specular");
         textures.InsertRange(textures.Count, specularMaps);
+        List<Texture> normalMaps = loadMaterialTextures(material, TextureType.Height, "texture_normal");
+        textures.InsertRange(textures.Count, normalMaps);
       }
 
       return new Mesh(vertices, indices, textures);

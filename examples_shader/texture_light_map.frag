@@ -44,6 +44,7 @@ struct Material {
   float shininess;
   sampler2D texture_diffuse1;
   sampler2D texture_specular1;
+  sampler2D texture_normal1;
 };
 
 uniform int nr_of_dir_lights;

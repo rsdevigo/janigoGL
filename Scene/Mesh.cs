@@ -26,6 +26,7 @@ namespace Scene
     {
       uint diffuseNr = 1;
       uint specularNr = 1;
+      uint normalNr = 1;
       
       for (int i = 0; i < _textures.Count; i++)
       {
@@ -42,6 +43,11 @@ namespace Scene
         {
           number = specularNr.ToString();
           specularNr++;
+        }
+        else if (name == "texture_normal")
+        {
+          number = normalNr.ToString();
+          normalNr++;
         }
         shader.SetInt(i, "material."+ name + number);
         GL.BindTexture(TextureTarget.Texture2D, _textures[i].id);

@@ -16,7 +16,10 @@ namespace janigoGL
     public bool mPressed = false;
     public bool pPressed = false;
     public bool firstMove = true;
-    public Game(int width, int height, string title) : base(width, height, GraphicsMode.Default, title, GameWindowFlags.Default, DisplayDevice.Default, 4, 2, GraphicsContextFlags.ForwardCompatible) { }
+    public PostProcessing postProcessing;
+    public bool executepostProcessing = false;
+    public Skybox skybox;
+    public Game(int width, int height, string title) : base(width, height, new GraphicsMode(new ColorFormat(32), 16, 0, 4), title, GameWindowFlags.Default, DisplayDevice.Default, 4, 2, GraphicsContextFlags.ForwardCompatible) { }
     protected override void OnUpdateFrame(FrameEventArgs e)
     {
       if (!Focused) {
@@ -28,17 +31,6 @@ namespace janigoGL
       if (input.IsKeyDown(Key.Escape))
       {
         Exit();
-      }
-
-      if (input.IsKeyDown(Key.P) && !pPressed)
-      {
-        pPressed = true;
-        scene._camera.SwapProjection();
-      }
-
-      if (input.IsKeyUp(Key.P) && pPressed)
-      {
-        pPressed = false;
       }
 
       if (input.IsKeyDown(Key.W)) 
@@ -82,6 +74,39 @@ namespace janigoGL
         mPressed = false;
       }
 
+      if (input.IsKeyDown(Key.L) && !mPressed) 
+      {
+        mPressed = true;
+        GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+      }
+
+      if (input.IsKeyUp(Key.L) && mPressed) 
+      {
+        mPressed = false;
+      }
+
+      if (input.IsKeyDown(Key.F) && !mPressed) 
+      {
+        mPressed = true;
+        GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+      }
+
+      if (input.IsKeyUp(Key.F) && mPressed) 
+      {
+        mPressed = false;
+      }
+
+      if (input.IsKeyDown(Key.P) && !pPressed) 
+      {
+        pPressed = true;
+        executepostProcessing = !executepostProcessing;
+      }
+
+      if (input.IsKeyUp(Key.P) && pPressed) 
+      {
+        pPressed = false;
+      }
+
       var mouse = Mouse.GetState();
 
       if (firstMove) {
@@ -103,12 +128,15 @@ namespace janigoGL
     {
       scene = new Scene.Scene("scenes/scene.json");
       GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+      GL.Enable(EnableCap.Multisample);
       GL.Enable(EnableCap.DepthTest);
       GL.DepthFunc(DepthFunction.Less);
       GL.DepthMask(true);
       GL.DepthRange(scene._camera._near, scene._camera._far);
+      postProcessing = new PostProcessing(Width, Height, "./examples_shader/quad_shader.vert", "./examples_shader/quad_shader.frag");
       CursorVisible = false;
       CursorGrabbed = true;
+      skybox = new Skybox("skybox");
       base.OnLoad(e);
     }
 
@@ -121,8 +149,18 @@ namespace janigoGL
     protected override void OnRenderFrame(FrameEventArgs e)
     {
       _time += 10 * e.Time;
+      GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+      GL.Enable(EnableCap.DepthTest);
+      GL.DepthFunc(DepthFunction.Less);
+      GL.DepthMask(true);
+      GL.DepthRange(scene._camera._near, scene._camera._far);
+      if (executepostProcessing)
+        postProcessing.preparePostProcessing();
       GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
       scene.Draw();
+      skybox.Draw(scene._camera);
+      if (executepostProcessing)
+        postProcessing.executePostProcessing();
       Context.SwapBuffers();
       base.OnRenderFrame(e);
     }
@@ -149,7 +187,6 @@ namespace janigoGL
       scene._camera.fov -= e.DeltaPrecise;
       base.OnMouseWheel(e);
     }
-  
   }
 
 }
