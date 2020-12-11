@@ -29,6 +29,7 @@ namespace Scene
 
     private void LoadActor(string path)
     {
+      // Carrega arquivo .obj
       AssimpContext context = new AssimpContext();
       Assimp.Scene scene = context.ImportFile(path,
         PostProcessSteps.Triangulate | PostProcessSteps.FlipUVs |
@@ -41,6 +42,7 @@ namespace Scene
         return;
       }
 
+      // Coverte a estrutura de dados do Assimp para a estrutura de dados do janigoGL
       ProcessNode(scene.RootNode, scene);
     }
 
@@ -58,12 +60,16 @@ namespace Scene
       }
     }
 
+
+    // Processa a malha lida pelo Assimp
     private Mesh ProcessMesh(Assimp.Mesh amesh, Assimp.Scene scene)
     {
       List<Vertex> vertices = new List<Vertex>();
       List<uint> indices = new List<uint>();
       List<Texture> textures = new List<Texture>();
       Random r = new Random();
+
+      // Carrego pela malha do Assimp, a lista de vértice com a normal, UV (ST), tangente, bitangente
       for (int i = 0; i < amesh.VertexCount; i++)
       {
         Vertex vertex = new Vertex();
@@ -100,6 +106,7 @@ namespace Scene
         vertices.Add(vertex);
       }
 
+      // Carrega as informações das faces dos triâgulos, ou seja, informa quais vertices formam um triângulo da malha
       for (int i = 0; i < amesh.FaceCount; i++)
       {
         Assimp.Face face = amesh.Faces[i];
@@ -110,6 +117,7 @@ namespace Scene
         }
       }
 
+      // Verifica se possui alguma textura ou arquivo mtl vinculado ao obj
       if (amesh.MaterialIndex >= 0)
       {
         Assimp.Material material = scene.Materials[amesh.MaterialIndex];

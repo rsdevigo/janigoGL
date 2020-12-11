@@ -7,13 +7,12 @@ namespace janigoGL
   {
     static void Main(string[] args)
     {
+      // Cria um objeto do tipo Game com tamanho da janela de 800x600px
       using (Game game = new Game(800, 600, "janigoGL"))
       {
-        //Run takes a double, which is how many frames per second it should strive to reach.
-        //You can leave that out and it'll just update as fast as the hardware will allow it.
+        // Carrega a janela do JanigoGL com 60 frames por segundo.
         game.Run(60.0);
       }
-      //ObjLoaderTest tester = new ObjLoaderTest();
     }
   }
 }

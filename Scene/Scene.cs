@@ -10,9 +10,16 @@ namespace Scene
   class Scene
   {
     public Camera _camera;
+
+    // Gerenciador das fontes de luzes da cena
     public LightSourceManager lightSourceManager = new LightSourceManager();
+
+    // Lista de atores da cena
     public List<Actor> _actors = new List<Actor>();
+
+    // Shader da cena
     public Shader _shader;
+
 
     public Scene(String scenePath = "")
     {
@@ -22,17 +29,29 @@ namespace Scene
         sceneJsonSource = reader.ReadToEnd();
       }
       JObject sceneJson = JObject.Parse(sceneJsonSource);
+      // Carrega as informações da camera
       Vector3 _cameraPosition = sceneJson["camera"]["position"].ToObject<Vector3>();
       Vector3 _cameraTarget = sceneJson["camera"]["target"].ToObject<Vector3>();
+
+      // Carrega os atores
       LoadActors((JArray)sceneJson["actors"]);
+
+      // Carrega as luzes
       LoadLights((JArray)sceneJson["lights"]);
+
+      // Cria o objeto Camera e o objeto Shader
       _camera = new Camera(_cameraPosition, _cameraTarget, (int)sceneJson["width"], (int)sceneJson["height"]);
       _shader = new Shader((string)sceneJson["vertexShaderPath"], (string)sceneJson["fragmentShaderPath"]);
+
+      // Carrega as matrizes do sistema de coordenadas view e projeção no shader
       _shader.SetVector3(_camera._position, "viewPos");
       _shader.SetMatrix4(_camera._viewMatrix, "viewMatrix");
       _shader.SetMatrix4(_camera._projectionMatrix, "projectionMatrix");
+
+      // Carrega as informações das luzes da cena no shader
       lightSourceManager.LoadLights(_shader);
     }
+
 
     private void LoadActors(JArray actors)
     {
@@ -44,7 +63,11 @@ namespace Scene
         if (actor["objPath"] == null) {
           continue;
         }
+
+        //Cria um objeto do tipo Actor passando como parametro o arquivo obj
         Actor actorObj = new Actor((string)(actor["objPath"]));
+
+        // Nosso componente Transform do ator.
         Transform t = new Transform();
         t.scale = actor["scale"] != null ? actor["scale"].ToObject<Vector3>() : Vector3.One;
         t.translate = actor["translate"] != null ? actor["translate"].ToObject<Vector3>() : Vector3.Zero;
@@ -55,7 +78,9 @@ namespace Scene
           t.axis = actor["rotate"]["axis"] != null ? actor["rotate"]["axis"].ToObject<Vector3>() : Vector3.UnitX;
           t.angle = actor["rotate"]["angle"] != null ? (float)actor["rotate"]["angle"] : 0.0f;
         }
+        // Fim do componente Transform
 
+        // Carrega o material básico ADS do modelo
         Material m = new Material(Vector3.One, Vector3.One, Vector3.One, 32.0f);
 
         if (actor["material"] != null) {
@@ -65,9 +90,10 @@ namespace Scene
           float shininess = actor["material"]["shininess"] != null ? (float)actor["material"]["shininess"] : 32.0f;
           m = new Material(ambient, diffuse, specular, shininess);
         }
-        
+        // Fim material
         actorObj.transform = t;
         actorObj.material = m;
+
         _actors.Add(actorObj);
       }
     }
@@ -111,13 +137,16 @@ namespace Scene
       }
     }
 
+    // Desenha a cena
     public void Draw()
     {
+      // Manda pro shader a matriz do sistema de coodernadas
       _shader.SetVector3(_camera._position, "viewPos");
       _shader.SetMatrix4(_camera._viewMatrix, "viewMatrix");
       _shader.SetMatrix4(_camera._projectionMatrix, "projectionMatrix");
       _actors.ForEach(actor =>
       {
+        // Manda desenhar cada ator na cena
         actor.Draw(_shader);
       });
     }

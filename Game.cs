@@ -9,17 +9,28 @@ namespace janigoGL
 {
   class Game : GameWindow
   {
-    private double _time;
+    // Cena a ser desenhada
     public Scene.Scene scene;
-    public Matrix4 modelMatrix = Matrix4.CreateScale(0.5f) * Matrix4.CreateRotationX(45) * Matrix4.CreateRotationY(45) * Matrix4.CreateTranslation(Vector3.Zero);
+
+    // A última posição do mouse para o controle da camera
     public Vector2 lastPos;
+    // Estados dos botões pressionados
     public bool mPressed = false;
     public bool pPressed = false;
+    // Fim dos estados dos botões pressionados
     public bool firstMove = true;
+
+    // Representa o pós processamento da cena
     public PostProcessing postProcessing;
     public bool executepostProcessing = false;
+
+    // Representa o skybox que deverá ser desenhado
     public Skybox skybox;
+
     public Game(int width, int height, string title) : base(width, height, new GraphicsMode(new ColorFormat(32), 16, 0, 4), title, GameWindowFlags.Default, DisplayDevice.Default, 4, 2, GraphicsContextFlags.ForwardCompatible) { }
+
+    //Chamado a cada frame antes de desenhar a cena.
+    //Aqui é consultado as entradas dos usuário.
     protected override void OnUpdateFrame(FrameEventArgs e)
     {
       if (!Focused) {
@@ -124,19 +135,28 @@ namespace janigoGL
       base.OnUpdateFrame(e);
     }
 
+    //Chamado apenas uma vez quando inicializa a janela
     protected override void OnLoad(EventArgs e)
     {
+      // Carrega o arquivo da cena e consequentemente os modelos 3D listados no arquivo json
       scene = new Scene.Scene("scenes/scene.json");
+
       GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
       GL.Enable(EnableCap.Multisample);
       GL.Enable(EnableCap.DepthTest);
       GL.DepthFunc(DepthFunction.Less);
       GL.DepthMask(true);
       GL.DepthRange(scene._camera._near, scene._camera._far);
+
+      // Carrega o shader de pós processamento para aplicar na cena quando a tecla P ser pressionada
       postProcessing = new PostProcessing(Width, Height, "./examples_shader/quad_shader.vert", "./examples_shader/quad_shader.frag");
+
       CursorVisible = false;
       CursorGrabbed = true;
+      
+      // Carrega o shader do skybox com as imagens skybox_[direcao].jpg
       skybox = new Skybox("skybox");
+
       base.OnLoad(e);
     }
 
@@ -146,21 +166,29 @@ namespace janigoGL
       base.OnUnload(e);
     }
 
+    // A cada frame é chamado depois do OnUpdateFrame, aqui é desenhado a cena.
     protected override void OnRenderFrame(FrameEventArgs e)
     {
-      _time += 10 * e.Time;
       GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
       GL.Enable(EnableCap.DepthTest);
       GL.DepthFunc(DepthFunction.Less);
       GL.DepthMask(true);
       GL.DepthRange(scene._camera._near, scene._camera._far);
+
+      // Executando o postprocessing caso a tecla P tenha sido apertada no último frame
       if (executepostProcessing)
         postProcessing.preparePostProcessing();
       GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+      // Desenhando a cena.
       scene.Draw();
+
+      // Desenhando o skybox
       skybox.Draw(scene._camera);
+
+      // Executando o postprocessing caso a tecla P tenha sido apertada no último frame
       if (executepostProcessing)
         postProcessing.executePostProcessing();
+      
       Context.SwapBuffers();
       base.OnRenderFrame(e);
     }
@@ -176,7 +204,7 @@ namespace janigoGL
     {
       if (Focused)
       {
-          Mouse.SetPosition(X + Width / 2f, Y + Height / 2f);
+        Mouse.SetPosition(X + Width / 2f, Y + Height / 2f);
       }
 
       base.OnMouseMove(e);
