@@ -4,6 +4,9 @@ layout(location = 0)in vec3 normal;
 layout(location = 1)in vec3 fColor;
 layout(location = 2)in vec3 fragPos;
 layout(location = 3)in vec2 texCoords;
+layout(location = 4)in mat3 TBN;
+layout(location = 7)in vec3 tangentViewPos;
+layout(location = 8)in vec3 tangentFragPos;
 
 #define MAX_LIGHT_SIZE 20
 
@@ -69,16 +72,18 @@ vec3 calcADS(vec3 ambient, vec3 diffuse, vec3 specular, vec3 lightDir, vec3 poin
 
 void main(void) {
   vec3 saida = vec3(0.0);
+  vec3 normal1 = texture(material.texture_normal1, texCoords).rgb;
+  normal1 = normal1 * 2.0 - 1.0;
   for (int i = 0; i < nr_of_dir_lights; i++) {
-    saida += calcDirectionalLight(directionalLights[i], fragPos, normal, viewPos, material);
+    saida += calcDirectionalLight(directionalLights[i], tangentFragPos, normal1, tangentViewPos, material);
   }
 
   for (int i = 0; i < nr_of_point_lights; i++) {
-    saida += calcLightPoint(pointLights[i], fragPos, normal, viewPos, material);
+    saida += calcLightPoint(pointLights[i], tangentFragPos, normal1, tangentViewPos, material);
   }
 
   for (int i = 0; i < nr_of_spot_lights; i++) {
-    saida += calcSpotLight(spotLights[i], fragPos, normal, viewPos, material);
+    saida += calcSpotLight(spotLights[i], tangentFragPos, normal1, tangentViewPos, material);
   }
   FragColor = vec4(saida, 1);
   float gamma = 2.2;
@@ -86,10 +91,11 @@ void main(void) {
 }
 
 vec3 calcLightPoint(PointLight light, vec3 point, vec3 point_normal, vec3 eyePoint, Material surfaceMaterial) {
+  vec3 ligpos = TBN * light.position;
 
-  float f = fallOff(light.linear, light.quadratic, light.constant, point, light.position);
+  float f = fallOff(light.linear, light.quadratic, light.constant, point, ligpos);
 
-  vec3 lightDir = normalize(light.position - point);
+  vec3 lightDir = normalize(ligpos - point);
 
   return calcADS(light.ambient, light.diffuse, light.specular, lightDir, point, point_normal, eyePoint, surfaceMaterial) * f;
 }
@@ -107,14 +113,15 @@ vec3 calcDirectionalLight(DirectionalLight light, vec3 point, vec3 point_normal,
 }
 
 vec3 calcSpotLight(SpotLight light, vec3 point, vec3 point_normal, vec3 eyePoint, Material surfaceMaterial) {
-  vec3 lightDir = normalize(light.position - point);
+  vec3 ligpos = TBN * light.position;
+  vec3 lightDir = normalize(ligpos - point);
 
   float cosTheta = dot(lightDir, normalize(-light.direction));
 
   float cosCutoff = cos(radians(light.cutoff));
   float cosOuterCutOff = cos(radians(light.outercutoff));
 
-  float f = fallOff(light.linear, light.quadratic, light.constant, point, light.position);
+  float f = fallOff(light.linear, light.quadratic, light.constant, point, ligpos);
 
   float epsilon = cosCutoff - cosOuterCutOff;
   float intensity = clamp((cosTheta - cosOuterCutOff) / epsilon, 0.0, 1.0);
